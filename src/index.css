@@ -25,9 +25,20 @@ main {
   padding: 25px;
 }
 
-.search-box {
-  width: 100%;
-  margin: 0 0 75px;
+.search-box{
+  width: 50%;
+  margin: auto;
+}
+
+button {
+  display: inline;
+  padding: 15px;
+
+
+}
+
+.true{
+  cursor: pointer
 }
 
 .search-box .search-bar {
