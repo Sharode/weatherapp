@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 const api = {
   key: '000b7c246f3b0d54300ff5f8306acc67',
   base: 'https:/api.openweathermap.org/data/2.5/find?'
@@ -8,6 +8,7 @@ function App() {
   const [query, setQuery] = useState('')
   const [weather, setWeather] = useState({})
   const [metrics, setMetrics] = useState('imperial')
+  const [b_image, setB_Image] = useState('')
 
   const search = async (evt) => {
     if (evt.key === 'Enter') {
@@ -15,7 +16,10 @@ function App() {
       const result = await response.json()
       setWeather(result);
       setQuery('')
+      setB_Image(background(result))
+
     }
+
   }
 
   const dateBuilder = (d) => {
@@ -36,8 +40,7 @@ function App() {
   }
 
   const temp = () => {
-    console.log(weather.list[0].main.temp)
-    console.log(weather)
+
     if (metrics === 'metric') {
       return (Math.floor(weather.list[0].main.temp))
     }
@@ -46,11 +49,43 @@ function App() {
 
   }
 
+
+  const background = (data) => {
+    let bg = ''
+
+    switch (data.list[0].weather[0].main) {
+      case 'Clear':
+        bg = 'app clear'
+        break
+      case 'Rain':
+        bg = 'app rainy'
+        break
+      case 'Clouds':
+        bg = 'app cloudy'
+        break
+      case 'Sunny':
+        bg = 'app sunny'
+
+        break
+      case 'Snow':
+        bg = 'app clear'
+        break
+      default:
+        bg = 'app warm'
+        break
+    }
+    return bg
+  }
+
   return (
-    <div className={(weather.message === 'accurate') ? ((weather.list[0].main.temp > 16) ? 'app warm' : 'app') : 'app'}>
+    <div className={(weather.message === 'undefined')
+      ? 'app'
+      : (weather.message === 'accurate')
+        ? (b_image)
+        : 'app'} >
       <main>
         <div className="search-box">
-          <input type="" className='search-bar' placeholder='search ....' onChange={e => setQuery(e.target.value)} value={query} onKeyPress={search} />
+          <input type="" className='search-bar' placeholder='type in city.... then Press Enter' onChange={e => setQuery(e.target.value)} value={query} onKeyPress={search} />
           <button
             className={metrics === 'metric' ? 'true' : 'false'}
             disabled={metrics !== 'metric'}
@@ -58,7 +93,8 @@ function App() {
           <button
             className={metrics !== 'metric' ? 'true' : 'false'}
             disabled={metrics === 'metric'}
-            onClick={(e) => handleClick(e)}>Celcius°</button>
+            onClick={(e) => handleClick(e)}>Celcius°
+            </button>
         </div>
         {(weather.message === "accurate" && weather.list.length > 0) ? (
           <div>
